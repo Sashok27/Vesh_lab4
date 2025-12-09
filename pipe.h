@@ -7,7 +7,8 @@
 class Pipe {
 public:
     int id;  
-    
+    double getProductivity() const;  // Пропускная способность
+    double getWeight() const;        // Вес для пути (бесконечность при ремонте)
     
     Pipe() : id(0), name(""), length(0), diameter(0), repair(false) {}
     Pipe(int pipe_id) : id(pipe_id), name(""), length(0), diameter(0), repair(false) {}
