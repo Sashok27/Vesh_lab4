@@ -30,6 +30,9 @@ private:
 
     int getNextPipeId() { return next_pipe_id++; }
     int getNextStationId() { return next_station_id++; }
+    
+    void calculateMaxFlow();
+    void findShortestPath();
 
 public:
     void run();
