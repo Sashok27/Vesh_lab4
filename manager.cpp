@@ -512,3 +512,91 @@ void Manager::logAction(const string& action) const {
     strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", localtime(&time));
     log << "[" << time_str << "] " << action << endl;
 }
+
+
+void Manager::calculateMaxFlow() {
+    if (stations.size() < 2) {
+        cout << "Для расчета потока нужно как минимум 2 КС." << endl;
+        return;
+    }
+    
+    cout << "Доступные КС:" << endl;
+    for (const auto& s : stations) {
+        cout << "ID: " << s.first << " - " << s.second.getName() << endl;
+    }
+    
+    int source_id = getValidInput<int>("Введите ID источника (начальной КС): ", 
+        [this](int x) { return stations.find(x) != stations.end(); });
+    
+    int sink_id = getValidInput<int>("Введите ID стока (конечной КС): ", 
+        [this, source_id](int x) { 
+            return stations.find(x) != stations.end() && x != source_id; 
+        });
+    
+    try {
+        double max_flow = network.calculateMaxFlow(source_id, sink_id, pipes);
+        cout << "Максимальный поток от КС " << source_id 
+             << " к КС " << sink_id << ": " << max_flow << " усл. ед." << endl;
+        
+        logAction("Расчет максимального потока: КС " + to_string(source_id) + 
+                  " -> КС " + to_string(sink_id) + " = " + to_string(max_flow));
+    } catch (const exception& e) {
+        cout << "Ошибка: " << e.what() << endl;
+    }
+}
+
+void Manager::findShortestPath() {
+    if (stations.size() < 2) {
+        cout << "Для поиска пути нужно как минимум 2 КС." << endl;
+        return;
+    }
+    
+    cout << "Доступные КС:" << endl;
+    for (const auto& s : stations) {
+        cout << "ID: " << s.first << " - " << s.second.getName() << endl;
+    }
+    
+    int start_id = getValidInput<int>("Введите ID начальной КС: ", 
+        [this](int x) { return stations.find(x) != stations.end(); });
+    
+    int end_id = getValidInput<int>("Введите ID конечной КС: ", 
+        [this, start_id](int x) { 
+            return stations.find(x) != stations.end() && x != start_id; 
+        });
+    
+    try {
+        vector<int> path = network.findShortestPath(start_id, end_id, pipes);
+        
+        if (path.empty()) {
+            cout << "Путь между КС " << start_id << " и КС " << end_id 
+                 << " не найден!" << endl;
+        } else {
+            cout << "Кратчайший путь (по длине):" << endl;
+            for (size_t i = 0; i < path.size(); i++) {
+                int cs_id = path[i];
+                cout << (i + 1) << ". КС ID " << cs_id << " - \"" 
+                     << stations.at(cs_id).getName() << "\"";
+                if (i > 0) {
+                    // Находим трубу между предыдущей и текущей КС
+                    for (const auto& conn : network.getConnections()) {
+                        if (conn.cs_in_id == path[i-1] && conn.cs_out_id == path[i]) {
+                            auto pipe_it = pipes.find(conn.pipe_id);
+                            if (pipe_it != pipes.end()) {
+                                cout << " (труба: " << pipe_it->second.getName() 
+                                     << ", длина: " << pipe_it->second.getLength() 
+                                     << " км)";
+                            }
+                            break;
+                        }
+                    }
+                }
+                cout << endl;
+            }
+            
+            logAction("Найден кратчайший путь: КС " + to_string(start_id) + 
+                      " -> КС " + to_string(end_id));
+        }
+    } catch (const exception& e) {
+        cout << "Ошибка: " << e.what() << endl;
+    }
+}
