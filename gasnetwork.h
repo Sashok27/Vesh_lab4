@@ -44,8 +44,7 @@ public:
     std::vector<int> findShortestPath(int start_id, int end_id,
                                      const std::map<int, Pipe>& pipes) const;
     
-    // Получить все соединения
-    const std::vector<Connection>& getConnections() const { return connections; }
+   
 
 
 private:
