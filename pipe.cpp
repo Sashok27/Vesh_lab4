@@ -21,7 +21,11 @@ void Pipe::input() {
 
 void Pipe::display() const {
     cout << "ID: " << id << "\nНазвание: " << name << "\nДлина: " << length 
-         << " км\nДиаметр: " << diameter << " мм\nВ ремонте: " << (repair ? "Да" : "Нет") << endl;
+         << " км\nДиаметр: " << diameter << " мм\nВ ремонте: " << (repair ? "Да" : "Нет") 
+         << "\nПропускная способность: " << getProductivity() 
+         << " усл. ед.\nВес для пути: " 
+         << (getWeight() == std::numeric_limits<double>::infinity() ? "бесконечность" : to_string(getWeight())) 
+         << endl;
 }
 
 std::ostream& operator<<(std::ostream& os, const Pipe& pipe) {
