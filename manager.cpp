@@ -22,6 +22,8 @@ void Manager::run() {
             case 7: connectStations(); break;
             case 8: displayNetwork(); break;
             case 9: topologicalSort(); break;
+            case 10: calculateMaxFlow(); break;
+            case 11: findShortestPath(); break;
             case 0: cout << "Выход из программы" << endl; return;
             default: cout << "Неверный выбор!" << endl;
         }
