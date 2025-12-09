@@ -36,6 +36,18 @@ public:
     void loadFromFile(std::istream& in);
     const std::vector<Connection>& getConnections() const { return connections; }
     
+    // Расчет максимального потока между двумя КС
+    double calculateMaxFlow(int source_id, int sink_id, 
+                           const std::map<int, Pipe>& pipes) const;
+    
+    // Поиск кратчайшего пути по весу (длине)
+    std::vector<int> findShortestPath(int start_id, int end_id,
+                                     const std::map<int, Pipe>& pipes) const;
+    
+    // Получить все соединения
+    const std::vector<Connection>& getConnections() const { return connections; }
+
+
 private:
     bool dfs(int v, std::set<int>& visited, std::set<int>& recursionStack, 
              const std::map<int, std::vector<int>>& graph) const;
